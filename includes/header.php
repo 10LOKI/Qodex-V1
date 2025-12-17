@@ -52,16 +52,16 @@ $initials = strtoupper(substr($_SESSION['nom'], 0, 2));
 
             <!-- Menu -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="../enseignant/dashboard.php" class="text-gray-700 hover:text-indigo-600 font-medium">
+                <a href="/qodex/enseignant/dashboard.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-home mr-2"></i>Tableau de bord
                 </a>
-                <a href="#categories" class="text-gray-700 hover:text-indigo-600 font-medium">
+                <a href="/qodex/enseignant/categories/categories.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-folder mr-2"></i>Catégories
                 </a>
-                <a href="../enseignant/add_quiz.php" class="text-gray-700 hover:text-indigo-600 font-medium">
+                <a href="/qodex/enseignant/add_quiz.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-clipboard-list mr-2"></i>Mes Quiz
                 </a>
-                <a href="../enseignant/view_results.php" class="text-gray-700 hover:text-indigo-600 font-medium">
+                <a href="/qodex/enseignant/view_results.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-chart-bar mr-2"></i>Résultats
                 </a>
             </div>
