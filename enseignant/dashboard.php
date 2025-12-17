@@ -1,8 +1,15 @@
 <?php
 session_start();
-require_once __DIR__ . "/../includes/header.php";
 require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../includes/header.php";
+
+$totQuiz= $pdo->query("SELECT COUNT(*) FROM quiz") -> fetchColumn();
+$totCategories = $pdo -> query("SELECT COUNT(*) FROM categories") -> fetchColumn();
+$totStudents = $pdo -> query("SELECT COUNT(*) FROM utilisateurs WHERE role = 'etudiant'") -> fetchColumn();
+$tauxReussite = $pdo ->query("SELECT ROUND(AVG(score),0) FROM resultats") ->fetchColumn();
+$tauxReussite = $tauxReussite ?? 0;
 ?>
+
         <!-- Dashboard Section -->
         <div id="dashboard" class="section-content">
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
@@ -27,7 +34,9 @@ require_once __DIR__ . "/../config/database.php";
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-gray-500 text-sm">Total Quiz</p>
-                                <p class="text-3xl font-bold text-gray-900">24</p>
+                                <p class="text-3xl font-bold text-gray-900">
+                            <?= $totQuiz ?>
+                        </p>
                             </div>
                             <div class="bg-blue-100 p-3 rounded-lg">
                                 <i class="fas fa-clipboard-list text-blue-600 text-2xl"></i>
@@ -38,7 +47,10 @@ require_once __DIR__ . "/../config/database.php";
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-gray-500 text-sm">Catégories</p>
-                                <p class="text-3xl font-bold text-gray-900">8</p>
+                                <p class="text-3xl font-bold text-gray-900">
+                            <?= $totCategories ?>
+                        </p>
+
                             </div>
                             <div class="bg-purple-100 p-3 rounded-lg">
                                 <i class="fas fa-folder text-purple-600 text-2xl"></i>
@@ -49,7 +61,9 @@ require_once __DIR__ . "/../config/database.php";
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-gray-500 text-sm">Étudiants Actifs</p>
-                                <p class="text-3xl font-bold text-gray-900">156</p>
+                                <p class="text-3xl font-bold text-gray-900">
+                            <?= $totStudents ?>
+                        </p>
                             </div>
                             <div class="bg-green-100 p-3 rounded-lg">
                                 <i class="fas fa-user-graduate text-green-600 text-2xl"></i>
@@ -60,7 +74,9 @@ require_once __DIR__ . "/../config/database.php";
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-gray-500 text-sm">Taux Réussite</p>
-                                <p class="text-3xl font-bold text-gray-900">87%</p>
+                                <p class="text-3xl font-bold text-gray-900">
+                            <?= $tauxReussite ?>%
+                        </p>
                             </div>
                             <div class="bg-yellow-100 p-3 rounded-lg">
                                 <i class="fas fa-chart-line text-yellow-600 text-2xl"></i>
