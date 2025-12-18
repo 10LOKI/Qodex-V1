@@ -58,7 +58,7 @@ $initials = strtoupper(substr($_SESSION['nom'], 0, 2));
                 <a href="/qodex/enseignant/categories/categories.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-folder mr-2"></i>Catégories
                 </a>
-                <a href="/qodex/enseignant/add_quiz.php" class="text-gray-700 hover:text-indigo-600 font-medium">
+                <a href="/qodex/enseignant/Quizes/quizzes.php" class="text-gray-700 hover:text-indigo-600 font-medium">
                     <i class="fas fa-clipboard-list mr-2"></i>Mes Quiz
                 </a>
                 <a href="/qodex/enseignant/view_results.php" class="text-gray-700 hover:text-indigo-600 font-medium">

@@ -6,6 +6,14 @@ require __DIR__ . "/../../config/database.php";
 $categories = $pdo->query("SELECT * FROM categories ORDER BY createdAtCat DESC")->fetchAll(PDO::FETCH_ASSOC);
 $statQuiz = $pdo->prepare("SELECT COUNT(*) FROM quiz WHERE id_categorie =?");
 $statEtudiants = $pdo->prepare("SELECT COUNT(DISTINCT r.id_etudiant) FROM resultats r JOIN quiz q ON q.id_quiz = r.id_quiz WHERE q.id_categorie = ?");
+
+$categoryToEdit = null;
+
+if (isset($_GET['edit'])) {
+    $stmt = $pdo->prepare("SELECT * FROM categories WHERE id_categorie = ?");
+    $stmt->execute([(int) $_GET['edit']]);
+    $categoryToEdit = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 <!-- Categories Section -->
 <div id="categories" class="section-content ">
@@ -39,12 +47,20 @@ $statEtudiants = $pdo->prepare("SELECT COUNT(DISTINCT r.id_etudiant) FROM result
                             <p class="text-gray-600 text-sm mt-1"><?= $catg['description'] ?></p>
                         </div>
                         <div class="flex gap-2">
-                            <button class="text-blue-600 hover:text-blue-700">
+                            <!-- Modifier -->
+                            <a href="categories.php?edit=<?= $catg['id_categorie'] ?>"
+                            class="text-blue-600 hover:text-blue-700">
                                 <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="text-red-600 hover:text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            </a>
+                            <!-- Supprimer -->
+                            <form action="/qodex/enseignant/categories/deleteCategory.php"
+                                method="POST"
+                                onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?');">
+                                <input type="hidden" name="id_categorie" value="<?= $catg['id_categorie'] ?>">
+                                <button type="submit" class="text-red-600 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <div class="flex items-center justify-between text-sm">
@@ -104,4 +120,52 @@ $statEtudiants = $pdo->prepare("SELECT COUNT(DISTINCT r.id_etudiant) FROM result
         </div>
     </div>
 </div>
+<!-- maintenant creer le modal pour la modification des infos du categorie --> 
+<?php if ($categoryToEdit): ?>
+<!-- Modal: Modifier Catégorie -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div class="p-6">
+
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Modifier la catégorie</h3>
+                <a href="categories.php" class="text-xl">✕</a>
+            </div>
+
+            <form method="POST" action="/qodex/enseignant/categories/editCategory.php">
+
+                <input type="hidden" name="id_categorie"
+                       value="<?= $categoryToEdit['id_categorie'] ?>">
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Nom *</label>
+                    <input type="text" name="nom_categorie" required
+                           value="<?= htmlspecialchars($categoryToEdit['nom_categorie']) ?>"
+                           class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">Description</label>
+                    <textarea name="description" rows="4"
+                              class="w-full border rounded-lg px-4 py-2"><?= htmlspecialchars($categoryToEdit['description']) ?></textarea>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="categories.php"
+                       class="flex-1 border rounded-lg py-2 text-center">
+                        Annuler
+                    </a>
+
+                    <button type="submit"
+                            class="flex-1 bg-indigo-600 text-white rounded-lg py-2">
+                        Enregistrer
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
