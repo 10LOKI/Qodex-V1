@@ -6,12 +6,10 @@ if (!isset($_SESSION['id_utilisateur']) || $_SESSION['role'] !== 'enseignant') {
     header("Location: ../../auth/login.php");
     exit;
 }
-
 if (empty($_POST['id_categorie']) || empty($_POST['nom_categorie'])) {
     header("Location: categories.php?error=missing");
     exit;
 }
-
 $id = (int) $_POST['id_categorie'];
 $nom = trim($_POST['nom_categorie']);
 $description = trim($_POST['description']);

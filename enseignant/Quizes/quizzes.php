@@ -10,33 +10,49 @@ if (!isset($_SESSION['id_utilisateur']) || $_SESSION['role'] !== 'enseignant') {
     exit;
 }
 
-/* Récupérer les catégories pour le select */
 $categories = $pdo->query("SELECT id_categorie, nom_categorie FROM categories ORDER BY nom_categorie ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Quiz Section ============> Mli tel9a solution rje3 had hidden-->
 <!-- Create Quiz Modal -->
-<div id="createQuizModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl w-full max-w-lg p-6 relative">
-        <button onclick="closeModal('createQuizModal')" class="absolute top-3 right-3 text-gray-500 hover:text-red-500">
+<div id="createQuizModal"
+     class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50">
+
+    <!-- Modal Box -->
+    <div class="bg-white rounded-xl w-full max-w-3xl p-6 relative
+                max-h-[90vh] overflow-y-auto shadow-2xl">
+
+        <!-- Close Button -->
+        <button onclick="closeModal('createQuizModal')"
+                class="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-xl">
             <i class="fas fa-times"></i>
         </button>
 
-        <h2 class="text-xl font-bold mb-4">Créer un quiz</h2>
+        <h2 class="text-2xl font-bold mb-6">Créer un quiz</h2>
 
-        <form action="/qodex/enseignant/quizzes/createQuiz.php" method="POST">
+        <form action="createQuiz.php" method="POST" class="space-y-4">
+
+            <!-- Titre -->
             <div>
-                <label class="block">Titre du quiz *</label>
-                <input type="text" name="titre_quiz" class="w-full border p-2 rounded" required>
+                <label class="block font-semibold mb-1">Titre du quiz *</label>
+                <input type="text" name="titre_quiz"
+                       class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                       required>
             </div>
 
+            <!-- Description -->
             <div>
-                <label class="block">Description</label>
-                <textarea name="description" class="w-full border p-2 rounded"></textarea>
+                <label class="block font-semibold mb-1">Description</label>
+                <textarea name="description"
+                          class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          rows="3"></textarea>
             </div>
 
+            <!-- Catégorie -->
             <div>
-                <label class="block">Catégorie *</label>
-                <select name="id_categorie" class="w-full border p-2 rounded" required>
+                <label class="block font-semibold mb-1">Catégorie *</label>
+                <select name="id_categorie"
+                        class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        required>
                     <option value="">-- Choisir --</option>
                     <?php foreach ($categories as $cat): ?>
                         <option value="<?= $cat['id_categorie'] ?>">
@@ -46,12 +62,73 @@ $categories = $pdo->query("SELECT id_categorie, nom_categorie FROM categories OR
                 </select>
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg">
-                Créer
+            <!-- Questions Section -->
+            <div class="border-t pt-6 mt-6">
+
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xl font-bold">Questions</h4>
+                    <button type="button" onclick="addQuestion()"
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                        <i class="fas fa-plus mr-2"></i>Ajouter une question
+                    </button>
+                </div>
+
+                <div id="questionsContainer">
+
+                    <!-- Question Block -->
+                    <div class="bg-gray-50 border rounded-lg p-4 mb-6 question-block">
+
+                        <div class="flex justify-between items-center mb-4">
+                            <h5 class="font-bold">Question 1</h5>
+                            <button type="button" onclick="removeQuestion(this)"
+                                    class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+
+                        <div class="mb-4">
+                            <input type="text" name="questions[0][question]"
+                                   class="w-full border px-3 py-2 rounded-lg"
+                                   required>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-3 mb-4">
+                            <input type="text" name="questions[0][option1]" placeholder="Option 1"
+                                   class="border px-3 py-2 rounded-lg" required>
+                            <input type="text" name="questions[0][option2]" placeholder="Option 2"
+                                   class="border px-3 py-2 rounded-lg" required>
+                            <input type="text" name="questions[0][option3]" placeholder="Option 3"
+                                   class="border px-3 py-2 rounded-lg" required>
+                            <input type="text" name="questions[0][option4]" placeholder="Option 4"
+                                   class="border px-3 py-2 rounded-lg" required>
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold mb-1">Réponse correcte *</label>
+                            <select name="questions[0][correct]"
+                                    class="w-full border px-3 py-2 rounded-lg" required>
+                                <option value="">-- Choisir --</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit"
+                    class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700">
+                Créer le quiz
             </button>
+
         </form>
     </div>
 </div>
+
         <!-- Quiz List -->
          <div class="flex mx-10 my-10 justify-between items-center mb-8">
     <div>
@@ -110,11 +187,12 @@ $categories = $pdo->query("SELECT id_categorie, nom_categorie FROM categories OR
     </div>
 </div>
 <script>
-function openModal(id) {
+function openModal(id) 
+{
     document.getElementById(id).classList.remove('hidden');
 }
-
-function closeModal(id) {
+function closeModal(id) 
+{
     document.getElementById(id).classList.add('hidden');
 }
 </script>
